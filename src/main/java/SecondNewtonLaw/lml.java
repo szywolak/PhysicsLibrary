@@ -1,5 +1,6 @@
 package SecondNewtonLaw;
 
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -44,6 +45,7 @@ public class lml extends JDialog {
                 if (selectedItem == 1) {
                     double mass = Double.parseDouble(firstInputCB.getText());
                     double Force = Double.parseDouble(secondInputCB.getText());
+                    refreshChartForAcceleration(mass, Force);
                     double equalFromRB = secondNewtonLaw.accelerationWithGivenMassAndForce(mass, Force);
                     System.out.println(equalFromRB);
                     String dsad = String.valueOf(equalFromRB);
@@ -52,6 +54,7 @@ public class lml extends JDialog {
                 if (selectedItem == 2) {
                     double acceleration = Double.parseDouble(firstInputCB.getText());
                     double force = Double.parseDouble(secondInputCB.getText());
+                    refreshChartForMass(force, acceleration);
                     double equalFromRB = secondNewtonLaw.massWithGivenForceAndAcceleration(acceleration, force);
                     System.out.println(equalFromRB);
                     String dsad = String.valueOf(equalFromRB);
@@ -60,6 +63,7 @@ public class lml extends JDialog {
                 if (selectedItem == 3) {
                     double mass = Double.parseDouble(firstInputCB.getText());
                     double acceleration = Double.parseDouble(secondInputCB.getText());
+                    refreshChartForForce(mass, acceleration);
                     double equalFromRB = secondNewtonLaw.forceWithGivenMassAndAcceleration(mass, acceleration);
                     System.out.println(equalFromRB);
                     String dsad = String.valueOf(equalFromRB);
@@ -142,10 +146,109 @@ public class lml extends JDialog {
 
         for (int i = 0; i < 10; i++) {
             dataset.addValue(ystep, "Step", xstep);
-            xstep = String.valueOf(ystep+"f");
+            xstep = String.valueOf(ystep + "f");
             ystep = ystep * mass;
         }
         return dataset;
+    }
+
+    private DefaultCategoryDataset dataForAcceleration(double mass, double force) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        double acceleration = force / mass;
+        double xStep = acceleration / 10;
+        double xLine = 0;
+        double yLinePlot = 0;
+        String xLinePlot = String.valueOf(xLine);
+
+        for (int i = 0; i < 11; i++) {
+            dataset.addValue(yLinePlot, "Step", xLinePlot);
+            xLinePlot = String.valueOf(xLine += xStep);
+            yLinePlot = Double.parseDouble(xLinePlot) * mass;
+        }
+        return dataset;
+    }
+
+    private DefaultCategoryDataset dataForMass(double force, double acceleration) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        //mass = force/acceleration
+        double mass = force / acceleration;
+        double xStep = mass / 10;
+        double xLine = 0;
+        double yLinePlot = 0;
+        String xLinePlot = String.valueOf(xLine);
+
+        for (int i = 0; i < 11; i++) {
+            dataset.addValue(yLinePlot, "Step", xLinePlot);
+            xLinePlot = String.valueOf(xLine += xStep);
+            yLinePlot = Double.parseDouble(xLinePlot) * mass;
+        }
+        return dataset;
+    }
+
+    private DefaultCategoryDataset dataForForce(double mass, double acceleration) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        //force = mass * acceleration
+        double force = mass * acceleration;
+        double xStep = force / 10;
+        double xLine = 0;
+        double yLinePlot = 0;
+        String xLinePlot = String.valueOf(xLine);
+
+        for (int i = 0; i < 11; i++) {
+            dataset.addValue(yLinePlot, "Step", xLinePlot);
+            xLinePlot = String.valueOf(xLine += xStep);
+            yLinePlot = Double.parseDouble(xLinePlot) * mass;
+        }
+        return dataset;
+    }
+
+
+    private void refreshChartForAcceleration(double mass, double force) {
+        COMPOTFDFDS.removeAll();
+        COMPOTFDFDS.revalidate();
+        final String plotInfo = "Mass = " + mass;
+        JFreeChart lineChart = ChartFactory.createLineChart(
+                plotInfo,
+                "Acceleration", "Force",
+                dataForAcceleration(mass, force),
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        ChartPanel chartPanela = new ChartPanel(lineChart);
+        COMPOTFDFDS.add(chartPanela);
+        COMPOTFDFDS.repaint();
+    }
+
+    private void refreshChartForMass(double force, double acceleration) {
+        COMPOTFDFDS.removeAll();
+        COMPOTFDFDS.revalidate();
+        final String plotInfo = "Acceleration = " + acceleration;
+        JFreeChart lineChart = ChartFactory.createLineChart(
+                plotInfo,
+                "Mass", "Force",
+                dataForMass(force, acceleration),
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        ChartPanel chartPanela = new ChartPanel(lineChart);
+        COMPOTFDFDS.add(chartPanela);
+        COMPOTFDFDS.repaint();
+    }
+
+    private void refreshChartForForce(double mass, double acceleration) {
+        COMPOTFDFDS.removeAll();
+        COMPOTFDFDS.revalidate();
+        final String plotInfo = "Mass = " + mass;
+        JFreeChart lineChart = ChartFactory.createLineChart(
+                plotInfo,
+                "Force", "Acceleration",
+                dataForForce(mass, acceleration),
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        ChartPanel chartPanela = new ChartPanel(lineChart);
+        COMPOTFDFDS.add(chartPanela);
+        COMPOTFDFDS.repaint();
     }
 
 
