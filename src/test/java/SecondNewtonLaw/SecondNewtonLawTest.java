@@ -15,7 +15,8 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class SecondNewtonLawTest {
-
+    //given
+    SecondNewtonLaw secondNewtonLaw = new SecondNewtonLaw();
 
     private double mass;
     private int force;
@@ -39,12 +40,10 @@ public class SecondNewtonLawTest {
 
 
     @Test
-    public void test(){
-        //given
-        SecondNewtonLaw secondNewtonLaw = new SecondNewtonLaw();
+    public void testAcceleration(){
         //when
-        double as = secondNewtonLaw.accelerationWithGivenMassAndForce(mass, force);
+        double givenEqual = secondNewtonLaw.accelerationWithGivenMassAndForce(mass, force);
         //then
-        assertEquals(expected, as);
+        assertEquals(expected, givenEqual);
     }
 }
