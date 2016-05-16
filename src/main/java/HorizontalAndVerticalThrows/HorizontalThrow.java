@@ -1,3 +1,5 @@
+package HorizontalAndVerticalThrows;
+
 /**
  * Created by Michal on 09.05.2016.
  */

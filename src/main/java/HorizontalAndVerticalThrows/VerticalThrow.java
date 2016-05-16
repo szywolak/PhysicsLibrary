@@ -1,3 +1,5 @@
+package HorizontalAndVerticalThrows;
+
 /**
  * Created by Michal on 09.05.2016.
  */
@@ -8,6 +10,8 @@ public class VerticalThrow {
     double positionAfterSomeTime(double height, double time){
         double distance = Math.pow(time,2);
         distance=height-((G/2)*distance);
+        if(distance<0)
+            distance=0;
         return distance;
     }
 
