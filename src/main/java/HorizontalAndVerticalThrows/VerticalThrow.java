@@ -15,13 +15,13 @@ public class VerticalThrow {
         return distance;
     }
 
-    double speedAfterSomeTime(double time){
-        double speed = G*time;
-        return speed;
+    double velocityAfterSomeTime(double time){
+        double velocity = G*time;
+        return velocity;
     }
 
-    double speedBeforeColisionWithGround(double height){
-        double speed = Math.sqrt(2*G*height);
-        return speed;
+    double velocityBeforeColisionWithGround(double height){
+        double velocity = Math.sqrt(2*G*height);
+        return velocity;
     }
 }

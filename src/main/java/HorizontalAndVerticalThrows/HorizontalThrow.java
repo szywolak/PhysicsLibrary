@@ -7,27 +7,27 @@ public class HorizontalThrow {
 
     public static final double G = 9.81;
 
-    double speedAfterTime(double startSpeed, double time){
-        double speed = Math.sqrt(Math.pow(startSpeed,2)+Math.pow(time*G,2));
-        return speed;
+    double velocityAfterTime(double startVelocity, double time){
+        double velocity = Math.sqrt(Math.pow(startVelocity,2)+Math.pow(time*G,2));
+        return velocity;
     }
 
-    double speedBeforeColisionWithGround(double startSpeed, double height){
-        double speed = Math.sqrt(Math.pow(startSpeed,2)+2*G*height);
-        return speed;
+    double velocityBeforeColisionWithGround(double startVelocity, double height){
+        double velocity = Math.sqrt(Math.pow(startVelocity,2)+2*G*height);
+        return velocity;
     }
     double timeUntilColisionWithGround(double height){
         double time = Math.sqrt(2*height/G);
         return time;
     }
 
-    double range(double startSpeed, double height){
-        double range = startSpeed * Math.sqrt(2*height/G);
+    double range(double startVelocity, double height){
+        double range = startVelocity * Math.sqrt(2*height/G);
         return range;
     }
 
-    double pathY(double startSpeed, double height, double x){
-        double y = height - ((G*Math.pow(x,2))/(2*Math.pow(startSpeed,2)));
+    double pathY(double startVelocity, double height, double x){
+        double y = height - ((G*Math.pow(x,2))/(2*Math.pow(startVelocity,2)));
         return y;
     }
 }
