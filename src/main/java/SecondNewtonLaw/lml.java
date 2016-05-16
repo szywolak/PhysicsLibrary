@@ -208,7 +208,7 @@ public class lml extends JDialog {
      */
     private void onSave(JFreeChart lineChart) throws IOException {
         ChartUtilities.saveChartAsPNG(new File(randomName + ".png"), lineChart, 400, 300);
-        LOGGER.info("Your chart is saved as" + randomName);
+        LOGGER.info("Your chart is saved as " + randomName);
     }
 
     /**
