@@ -3,12 +3,17 @@ package SecondNewtonLaw;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class lml extends JDialog {
@@ -28,47 +33,76 @@ public class lml extends JDialog {
 
     private final static Logger LOGGER = Logger.getLogger(lml.class.getName());
     SecondNewtonLaw secondNewtonLaw = new SecondNewtonLaw();
+    UUID randomName = UUID.randomUUID();
+    Font messageFont = new Font("Georgia", Font.PLAIN, 20);
 
     public lml() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(convertionButton);
-        biznesLogic();
+        openPlot();
+        MessegaField.setEnabled(false);
+        MessegaField.setDisabledTextColor(Color.BLUE);
+        MessegaField.setHorizontalAlignment(SwingConstants.CENTER);
+        MessegaField.setFont(messageFont);
+
 
         convertionButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedItem = comboBox1.getSelectedIndex();
-                biznesLogic();
+                openPlot();
                 if (selectedItem == 0) {
                     LOGGER.info("Choose another value!");
                 }
                 if (selectedItem == 1) {
-                    double mass = Double.parseDouble(firstInputCB.getText());
-                    double Force = Double.parseDouble(secondInputCB.getText());
-                    refreshChartForAcceleration(mass, Force);
-                    double equalFromRB = secondNewtonLaw.accelerationWithGivenMassAndForce(mass, Force);
-                    System.out.println(equalFromRB);
-                    String dsad = String.valueOf(equalFromRB);
-                    MessegaField.setText(dsad);
+                    selectedItemOne();
                 }
                 if (selectedItem == 2) {
-                    double acceleration = Double.parseDouble(firstInputCB.getText());
-                    double force = Double.parseDouble(secondInputCB.getText());
-                    refreshChartForMass(force, acceleration);
-                    double equalFromRB = secondNewtonLaw.massWithGivenForceAndAcceleration(acceleration, force);
-                    System.out.println(equalFromRB);
-                    String dsad = String.valueOf(equalFromRB);
-                    MessegaField.setText(dsad);
+                    selectedItemSecond();
                 }
                 if (selectedItem == 3) {
-                    double mass = Double.parseDouble(firstInputCB.getText());
-                    double acceleration = Double.parseDouble(secondInputCB.getText());
-                    refreshChartForForce(mass, acceleration);
-                    double equalFromRB = secondNewtonLaw.forceWithGivenMassAndAcceleration(mass, acceleration);
-                    System.out.println(equalFromRB);
-                    String dsad = String.valueOf(equalFromRB);
-                    MessegaField.setText(dsad);
+                    selectedItemThird();
                 }
+            }
+
+            private void selectedItemThird() {
+                double mass = Double.parseDouble(firstInputCB.getText());
+                double acceleration = Double.parseDouble(secondInputCB.getText());
+                try {
+                    refreshChartForForce(mass, acceleration);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                double equalFromRB = secondNewtonLaw.forceWithGivenMassAndAcceleration(mass, acceleration);
+                String equal = String.valueOf(equalFromRB);
+                MessegaField.setText("Force is equal to: " + equal);
+            }
+
+            private void selectedItemSecond() {
+                double acceleration = Double.parseDouble(firstInputCB.getText());
+                double force = Double.parseDouble(secondInputCB.getText());
+                try {
+                    refreshChartForMass(force, acceleration);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                double equalFromRB = secondNewtonLaw.massWithGivenForceAndAcceleration(acceleration, force);
+                String equal = String.valueOf(equalFromRB);
+                MessegaField.setText("Mass is equal to: " + equal);
+            }
+
+            private void selectedItemOne() {
+                double mass = Double.parseDouble(firstInputCB.getText());
+                double Force = Double.parseDouble(secondInputCB.getText());
+                try {
+                    refreshChartForAcceleration(mass, Force);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                double equalFromRB = secondNewtonLaw.accelerationWithGivenMassAndForce(mass, Force);
+                String equal = String.valueOf(equalFromRB);
+                MessegaField.setSelectedTextColor(Color.RED);
+                MessegaField.setText("Acceleration is equal to: " + equal);
             }
         });
 
@@ -77,6 +111,7 @@ public class lml extends JDialog {
                 onCancel();
             }
         });
+
 
 // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -111,10 +146,11 @@ public class lml extends JDialog {
         });
     }
 
-    private void biznesLogic() {
-        final String andrzej = "";
+
+
+    private void openPlot() {
         JFreeChart lineChart = ChartFactory.createLineChart(
-                andrzej,
+                "Wykres",
                 "Force", "Acceleration",
                 createDataset(),
                 PlotOrientation.VERTICAL,
@@ -125,15 +161,13 @@ public class lml extends JDialog {
     }
 
 
-    private void onOK() {
-// add your code here
+    private void onCancel() {
         dispose();
     }
 
-
-    private void onCancel() {
-// add your code here if necessary
-        dispose();
+    private void onSave(JFreeChart lineChart) throws IOException {
+        ChartUtilities.saveChartAsPNG(new File(randomName + ".png"), lineChart, 400, 300);
+        LOGGER.info("Your chart is saved as" + randomName);
     }
 
     private DefaultCategoryDataset createDataset() {
@@ -170,7 +204,6 @@ public class lml extends JDialog {
 
     private DefaultCategoryDataset dataForMass(double force, double acceleration) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        //mass = force/acceleration
         double mass = force / acceleration;
         double xStep = mass / 10;
         double xLine = 0;
@@ -203,7 +236,7 @@ public class lml extends JDialog {
     }
 
 
-    private void refreshChartForAcceleration(double mass, double force) {
+    public void refreshChartForAcceleration(double mass, double force) throws IOException {
         COMPOTFDFDS.removeAll();
         COMPOTFDFDS.revalidate();
         final String plotInfo = "Mass = " + mass;
@@ -217,9 +250,10 @@ public class lml extends JDialog {
         ChartPanel chartPanela = new ChartPanel(lineChart);
         COMPOTFDFDS.add(chartPanela);
         COMPOTFDFDS.repaint();
+        onSave(lineChart);
     }
 
-    private void refreshChartForMass(double force, double acceleration) {
+    public void refreshChartForMass(double force, double acceleration) throws IOException {
         COMPOTFDFDS.removeAll();
         COMPOTFDFDS.revalidate();
         final String plotInfo = "Acceleration = " + acceleration;
@@ -233,9 +267,10 @@ public class lml extends JDialog {
         ChartPanel chartPanela = new ChartPanel(lineChart);
         COMPOTFDFDS.add(chartPanela);
         COMPOTFDFDS.repaint();
+        onSave(lineChart);
     }
 
-    private void refreshChartForForce(double mass, double acceleration) {
+    public void refreshChartForForce(double mass, double acceleration) throws IOException {
         COMPOTFDFDS.removeAll();
         COMPOTFDFDS.revalidate();
         final String plotInfo = "Mass = " + mass;
@@ -249,9 +284,12 @@ public class lml extends JDialog {
         ChartPanel chartPanela = new ChartPanel(lineChart);
         COMPOTFDFDS.add(chartPanela);
         COMPOTFDFDS.repaint();
+        onSave(lineChart);
     }
 
-
+    /**
+     * This is the main method which converts mass and force to acceleration.
+     */
     public static void main(String[] args) {
         lml dialog = new lml();
         dialog.pack();
